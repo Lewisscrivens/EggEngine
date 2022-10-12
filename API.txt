@@ -1,0 +1,29 @@
+https://github.com/fffaraz/awesome-cpp
+
+Input library:
+Make one
+
+Math library:
+Make one
+
+GUI:
+iMGUI
+
+Rendering:
+Vulkan
+OpenGL
+DirectX
+
+Physics System:
+Nvidia PhysX 4.1
+(Future) PhysX 5.0
+
+Audio System:
+Make one
+
+Asset loading library:
+Assimp (Models)
+Use mixture of API for images.
+
+
+
