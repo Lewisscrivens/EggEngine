@@ -1,0 +1,3 @@
+[submodule "EggEngine/Source/ThirdParty/Spdlog"]
+	path = EggEngine/Source/ThirdParty/Spdlog
+	url = https://github.com/gabime/spdlog

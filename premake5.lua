@@ -21,14 +21,12 @@ project "EggEngine"
 	files
 	{
 		"EggEngine/Source/Runtime/**.h",
-		"EggEngine/Source/Runtime/**.cpp",
-		"EggEngine/Source/ThirdParty/**.h",
-		"EggEngine/Source/ThirdParty/**.cpp"
+		"EggEngine/Source/Runtime/**.cpp"
 	}
 	
 	includedirs
 	{
-		"EggEngine/Source/Runtime"
+		"EggEngine/EggEngine/Source/ThirdParty/Spdlog/include",
 	}
 	
 	filter "system:windows"
@@ -71,7 +69,8 @@ project "EggEditor"
 	
 	includedirs
 	{
-		"EggEngine/Source/Runtime"
+		"EggEngine/Source/Runtime",
+		"EggEngine/EggEngine/Source/ThirdParty/Spdlog/include"		
 	}
 	
 	links
