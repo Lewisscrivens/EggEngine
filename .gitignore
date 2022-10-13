@@ -12,6 +12,9 @@
 *.vcxproj.user
 
 .vs/
+.idea/
+EggEngine/Binaries/
+EggEngine/Intermediate/
 
 # Visual C++ cache files
 ipch/
