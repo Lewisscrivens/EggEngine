@@ -4,29 +4,31 @@ workspace "EggEngine"
 	configurations
 	{
 		"Debug",
-		"Release"
+		"Development"
 	}
 	
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-${cfg.architecture}"
+winbinariesdir = "EggEngine/Binaries/Win64/"
+winintermediatedir = "EggEngine/Intermediate/Win64/"
 	
 project "EggEngine"
-	location "EggEngine"
+	location "EggEngine/Source/Runtime"
 	kind "SharedLib"
 	language "C++"
 	
-	targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
-	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
-	
+	targetdir (winbinariesdir .. "/%{prj.name}")
+	objdir (winintermediatedir .. "/%{prj.name}")
+
 	files
 	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp",
+		"EggEngine/Source/Runtime/**.h",
+		"EggEngine/Source/Runtime/**.cpp",
+		"EggEngine/Source/ThirdParty/**.h",
+		"EggEngine/Source/ThirdParty/**.cpp"
 	}
 	
 	includedirs
 	{
-		"EggEngine/Source",
-		
+		"EggEngine/Source/Runtime"
 	}
 	
 	filter "system:windows"
@@ -37,39 +39,39 @@ project "EggEngine"
 		defines
 		{
 			"PLATFORM_WINDOWS",
-			"EGG_BUILD",
-		}
-		
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../Binaries/" .. outputdir .. "/EggEditor")
+			"EGG_BUILD"
 		}
 
+		postbuildcommands
+		{
+			("{COPY} %{cfg.buildtarget.relpath} %{cfg.buildtarget.directory}../EggEditor/" )
+		}
+		
 	filter "configurations:Debug"
 		defines "EGG_DEBUG"
 		symbols "On"
 		
-	filter "configurations:Release"
-		defines "EGG_RELEASE"
+	filter "configurations:Development"
+		defines "EGG_DEV"
 		optimize "On"
 		
 project "EggEditor"
-	location "EggEditor"
+	location "EggEngine/Source/Programs/Editor"
 	kind "ConsoleApp"
 	language "C++"
-	
-	targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
-	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	targetdir (winbinariesdir .. "/%{prj.name}")
+	objdir (winintermediatedir .. "/%{prj.name}")
 	
 	files
 	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp",
+		"EggEngine/Source/Programs/Editor/**.h",
+		"EggEngine/Source/Programs/Editor/**.cpp"
 	}
 	
 	includedirs
 	{
-		"EggEngine/Source",
+		"EggEngine/Source/Runtime"
 	}
 	
 	links
@@ -91,6 +93,6 @@ project "EggEditor"
 		defines "EGG_DEBUG"
 		symbols "On"
 		
-	filter "configurations:Release"
-		defines "EGG_RELEASE"
+	filter "configurations:Development"
+		defines "EGG_DEV"
 		optimize "On"
