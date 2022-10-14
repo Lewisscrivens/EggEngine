@@ -16,6 +16,9 @@
 EggEngine/Binaries/
 EggEngine/Intermediate/
 
+#Custom file types
+*.log
+
 # Visual C++ cache files
 ipch/
 *.aps

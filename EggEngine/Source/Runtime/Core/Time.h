@@ -42,6 +42,21 @@ public:
         return (CurrentTime / 1000.0f);
     }
 
+    /** Returns time stamp as string now. E.g 2022.10.14-01.31.54 */
+    static String GetTimeStamp()
+    {
+        auto time = std::time(nullptr);
+        auto time_info = std::localtime(&time);
+        char buffer[128];
+        int string_size = strftime(
+            buffer, sizeof(buffer),
+            "%Y.%m.%d-%H.%M.%S",
+            time_info
+        );
+
+        return buffer;
+    }
+
 private:
 
     /** Time since app initialized timer class. */

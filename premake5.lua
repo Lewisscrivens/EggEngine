@@ -26,7 +26,7 @@ project "EggEngine"
 	
 	includedirs
 	{
-		"EggEngine/EggEngine/Source/ThirdParty/Spdlog/include",
+		"EggEngine/Source/ThirdParty/Spdlog/include",
 	}
 	
 	filter "system:windows"
@@ -70,7 +70,7 @@ project "EggEditor"
 	includedirs
 	{
 		"EggEngine/Source/Runtime",
-		"EggEngine/EggEngine/Source/ThirdParty/Spdlog/include"		
+		"EggEngine/Source/ThirdParty/Spdlog/include"		
 	}
 	
 	links
@@ -85,7 +85,7 @@ project "EggEditor"
 		
 		defines
 		{
-			"PLATFORM_WINDOWS",
+			"PLATFORM_WINDOWS"
 		}
 		
 	filter "configurations:Debug"

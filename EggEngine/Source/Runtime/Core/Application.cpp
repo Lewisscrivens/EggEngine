@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Log.h"
 
 Application* Application::ActiveApplication = nullptr;
 
@@ -18,8 +19,7 @@ int Application::Start()
         // Update engine frame time.
 		ApplicationTime.UpdateTime();
         Tick(ApplicationTime.GetDeltaTime());
-
-
+		
 	}
 
     return 0;
@@ -27,6 +27,8 @@ int Application::Start()
 
 void Application::Init()
 {
+	// Init logging system for the engine.
+	Log::Init();
 	
 }
 
