@@ -1,4 +1,5 @@
 ﻿
+#include "EggPch.h"
 #include "Log.h"
 #include "Path.h"
 #include "Time.h"

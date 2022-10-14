@@ -17,6 +17,9 @@ project "EggEngine"
 	
 	targetdir (winbinariesdir .. "/%{prj.name}")
 	objdir (winintermediatedir .. "/%{prj.name}")
+	
+	pchheader "EggPch.h"
+	pchsource "EggEngine/Source/Runtime/EggPch.cpp"
 
 	files
 	{
@@ -26,6 +29,7 @@ project "EggEngine"
 	
 	includedirs
 	{
+		"EggEngine/Source",
 		"EggEngine/Source/ThirdParty/Spdlog/include",
 	}
 	

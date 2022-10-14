@@ -1,11 +1,8 @@
 #pragma once
 
-/* Include api. */
-#include <codecvt>
-#include <iostream>
 #include <memory>
 #include <utility>
-#include <optional>
+#include <string>
 
 /* Is profiling enabled? */
 #define ENGINE_LOG_ENABLED 1
