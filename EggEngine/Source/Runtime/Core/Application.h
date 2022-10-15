@@ -39,7 +39,7 @@ private:
 	/** Static pointer to this app. */
 	static Application* ActiveApplication;
 
-    /** Timer for calculating engine time and delta time. */
+    /** Calculation for FPS and DeltaTime in seconds as float. */
     Time ApplicationTime;
 	
 	/** Is the app currently running? */

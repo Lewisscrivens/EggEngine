@@ -1,69 +1,158 @@
 #pragma once
 
-#include <chrono>
 #include "EggCore.h"
+#include <chrono>
+#include <string>
+#include <iomanip>
+#include <sstream>
 
-/** Timer class to keep track of time that the application has been opened. */
+using namespace std::chrono_literals;
+
+/** Timer class to keep track of time in microseconds.
+ *  NOTE: Could probably make some adjustments so FPS and DeltaTime are modular
+ *       and not just stored from the seconds. */
 class EGG_API Time
 {
+	
 public:
+	
+	Time() = default;
 
-    /** Start the timer when created. */
-    Time()
-    {
-        StartTimePoint = std::chrono::steady_clock::now();
-    }
+	/** Update the the delta time and the rate per seconds this timer is running at. */
+	void Update()
+	{
+		const auto TimeNow = Now();
+		CurrentFrameTime = TimeNow.GetSeconds();
+		DeltaTime = CurrentFrameTime - LastFrameTime;
+		LastFrameTime = CurrentFrameTime;
+		FramesPerSecond = 1.0f / DeltaTime;
+		CurrentTimeMicroseconds = TimeNow.GetMicroseconds();
+	}
 
-    /** Update the time per engine loop / tick frame. */
-    void UpdateTime()
-    {
-        const auto CurrentTimePoint = std::chrono::steady_clock::now();
-        const std::chrono::duration<float> CurrentFrameTime = CurrentTimePoint - LastFrameTimePoint;
+	/** Creates a new time. */
+	template<typename Rep, typename Period>
+	constexpr Time(const std::chrono::duration<Rep, Period> &duration) :
+		CurrentTimeMicroseconds(std::chrono::duration_cast<std::chrono::microseconds>(duration).count()) {}
+	
+	/** Gets CurrentTimeMicroseconds in seconds as Time. */
+	template<typename T = float>
+	constexpr static Time Seconds(const T &seconds)
+	{
+		return Time(std::chrono::duration<T>(seconds));
+	}
 
-        DeltaTime = CurrentFrameTime.count();
-        CurrentTime = std::chrono::duration<float>(CurrentTimePoint - StartTimePoint).count();
-        LastFrameTimePoint = CurrentTimePoint;
-    }
+	/** Gets CurrentTimeMicroseconds in milliseconds as Time. */
+	template<typename T = int32_t>
+	constexpr static Time Milliseconds(const T &milliseconds)
+	{
+		return Time(std::chrono::duration<T, std::micro>(milliseconds));
+	}
 
-    /** Returns current frame delta time. */
-    float GetDeltaTime() const
-    {
-        return DeltaTime;
-    }
+	/** Gets CurrentTimeMicroseconds in microseconds as Time. */
+	template<typename T = int64_t>
+	constexpr static Time Microseconds(const T  &microseconds)
+	{
+		return Time(std::chrono::duration<T , std::micro>(microseconds));
+	}
 
-    /** Returns current app time in seconds as a float. */
-    float GetTimeSeconds() const
-    {
-        return CurrentTime;
-    }
+	/** Gets the time CurrentTimeMicroseconds in seconds of type T. */
+	template<typename T = float>
+	constexpr T GetSeconds() const
+	{
+		return static_cast<T>(CurrentTimeMicroseconds) / static_cast<T>(1000000);
+	}
 
-    /** Returns current app time in milliseconds as a float. */
-    float GetTimeMilliseconds() const
-    {
-        return (CurrentTime / 1000.0f);
-    }
+	/** Gets the time CurrentTimeMicroseconds in milliseconds of type T. */
+	template<typename T = int32_t>
+	constexpr auto GetMilliseconds() const
+	{
+		return static_cast<T>(CurrentTimeMicroseconds) / static_cast<T>(1000);
+	}
 
-    /** Returns time stamp as string now. E.g 2022.10.14-01.31.54 */
-    static String GetTimeStamp()
-    {
-        auto time = std::time(nullptr);
-        auto time_info = std::localtime(&time);
-        char buffer[128];
-        int string_size = strftime(
-            buffer, sizeof(buffer),
-            "%Y.%m.%d-%H.%M.%S",
-            time_info
-        );
+	/** Gets the time CurrentTimeMicroseconds in microseconds of type T. */
+	template<typename T = int64_t>
+	constexpr auto GetMicroseconds() const
+	{
+		return static_cast<T>(CurrentTimeMicroseconds);
+	}
 
-        return buffer;
-    }
+	/** Returns the update rate that this timer is running at in seconds. */
+	constexpr float GetDeltaTime() const
+	{
+		return DeltaTime;
+	}
+
+	/** Returns the frames per second this timer is running at. */
+	constexpr float GetFramesPerSecond() const
+	{
+		return FramesPerSecond;
+	}
+	
+	/** Gets the current time of this application. */
+	static Time Now()
+	{
+		static const auto LocalEpoch = std::chrono::high_resolution_clock::now();
+		return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - LocalEpoch);
+	}
+
+	/** Gets the current system time as a string. By default the format is %Y.%m.%d-%H.%M.%S
+	 *  @param InFormat The format to put the time into. */
+	static std::string GetTimeStamp(std::string_view InFormat = "%Y.%m.%d-%H.%M.%S")
+	{
+		auto TimeNow = std::chrono::system_clock::now();
+		auto Time64 = std::chrono::system_clock::to_time_t(TimeNow);
+
+		// Build time into string with format and return.
+		std::stringstream OutStringStream;
+		OutStringStream << std::put_time(std::localtime(&Time64), InFormat.data());
+		return OutStringStream.str();
+	}
+
+	/** Operator overrides for comparing times. */
+
+	template<typename Rep, typename Period>
+	constexpr operator std::chrono::duration<Rep, Period>() const
+	{
+		return std::chrono::duration_cast<std::chrono::duration<Rep, Period>>(CurrentTimeMicroseconds);
+	}
+
+	constexpr bool operator==(const Time &Other) const
+	{
+		return CurrentTimeMicroseconds == Other.CurrentTimeMicroseconds;
+	}
+
+	constexpr bool operator!=(const Time &Other) const
+	{
+		return CurrentTimeMicroseconds != Other.CurrentTimeMicroseconds;
+	}
+
+	constexpr bool operator<(const Time &Other) const
+	{
+		return CurrentTimeMicroseconds < Other.CurrentTimeMicroseconds;
+	}
+
+	constexpr bool operator<=(const Time &Other) const
+	{
+		return CurrentTimeMicroseconds <= Other.CurrentTimeMicroseconds;
+	}
+
+	constexpr bool operator>(const Time &Other) const
+	{
+		return CurrentTimeMicroseconds > Other.CurrentTimeMicroseconds;
+	}
+
+	constexpr bool operator>=(const Time &Other) const
+	{
+		return CurrentTimeMicroseconds >= Other.CurrentTimeMicroseconds;
+	}
 
 private:
+	
+	int64_t CurrentTimeMicroseconds = 0.0f;
 
-    /** Time since app initialized timer class. */
-    std::chrono::steady_clock::time_point StartTimePoint;
-    std::chrono::steady_clock::time_point LastFrameTimePoint;
-
-    float DeltaTime = 0.0f;
-    float CurrentTime = 0.0f;
+	// Delta time calculation.
+	float CurrentFrameTime = 0.0f;
+	float LastFrameTime = 0.0f;
+	float DeltaTime = 0.0f;
+	float FramesPerSecond = 0.0f;
 };

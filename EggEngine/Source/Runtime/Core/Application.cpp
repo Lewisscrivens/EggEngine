@@ -15,12 +15,13 @@ int Application::Start()
 	// Run begin first and once.
 	Init();
 
-	// Enter infinite loop.
+	// Enter application loop.
 	while (bAppRunning)
 	{
         // Update engine frame time.
-		ApplicationTime.UpdateTime();
+		ApplicationTime.Update();
         Tick(ApplicationTime.GetDeltaTime());
+
 		
 	}
 

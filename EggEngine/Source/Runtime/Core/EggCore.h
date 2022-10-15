@@ -35,10 +35,6 @@
 #define APP_LOG(LogType, ...) Log::AddAppLogMessage(LogType, __VA_ARGS__)
 #define APP_QUICK_LOG(...) Log::AddAppLogMessage(ELogType::Message, __VA_ARGS__)
 
-/** String helpers. */
-using String = std::string;
-using W_String = std::wstring;
-
 /** A Unique Pointer solely and explicitly owns the object it references. Since there can only be one
  *  Unique Pointer to a given resource, Unique Pointers can transfer ownership, but cannot share it. */
 template<typename T>

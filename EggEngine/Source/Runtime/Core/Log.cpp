@@ -1,21 +1,21 @@
 ﻿
 #include "EggPch.h"
 #include "Log.h"
-#include "Path.h"
+#include "../Utility/PathUtility.h"
 #include "Time.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
 /** Log output destination depending on build mode. */
 #if EGG_DEBUG
-#define ENGINE_LOG_OUTPUT FPath::GetSavedDir() + "/Logs/EggLog-Debug-" + Time::GetTimeStamp() + ".log"
-#define APP_LOG_OUTPUT FPath::GetSavedDir() + "/Logs/AppLog-Debug-" + Time::GetTimeStamp() + ".log"
+#define ENGINE_LOG_OUTPUT FPathUtil::GetSavedDir() + "/Logs/EggLog-Debug-" + Time::GetTimeStamp() + ".log"
+#define APP_LOG_OUTPUT FPathUtil::GetSavedDir() + "/Logs/AppLog-Debug-" + Time::GetTimeStamp() + ".log"
 #elif EGG_DEV
-#define ENGINE_LOG_OUTPUT FPath::GetSavedDir().c_str() + "/Logs/EggLog-Dev-" + Time::GetTimeStamp() + ".log"
-#define APP_LOG_OUTPUT FPath::GetSavedDir().c_str() + "/Logs/AppLog-Dev-" + Time::GetTimeStamp() + ".log"
+#define ENGINE_LOG_OUTPUT FPathUtil::GetSavedDir().c_str() + "/Logs/EggLog-Dev-" + Time::GetTimeStamp() + ".log"
+#define APP_LOG_OUTPUT FPathUtil::GetSavedDir().c_str() + "/Logs/AppLog-Dev-" + Time::GetTimeStamp() + ".log"
 #else
-#define ENGINE_LOG_OUTPUT FPath::GetSavedDir() + "/Logs/EggLog-Unknown-" + Time::GetTimeStamp() + ".log"
-#define APP_LOG_OUTPUT FPath::GetSavedDir() + "/Logs/AppLog-Unknown-" + Time::GetTimeStamp() + ".log"
+#define ENGINE_LOG_OUTPUT FPathUtil::GetSavedDir() + "/Logs/EggLog-Unknown-" + Time::GetTimeStamp() + ".log"
+#define APP_LOG_OUTPUT FPathUtil::GetSavedDir() + "/Logs/AppLog-Unknown-" + Time::GetTimeStamp() + ".log"
 #endif
 
 SharedPtr<spdlog::logger> Log::EngineLog;
