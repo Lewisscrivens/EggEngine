@@ -27,10 +27,6 @@ int Engine::Start()
         EngineTiming.Update();
         Tick(EngineTiming.GetDeltaTime());
 
-        if (EngineTiming.GetSeconds() > 5.0f)
-        {
-            bEngineRunning = false;
-        }
     }
 
     return 0;

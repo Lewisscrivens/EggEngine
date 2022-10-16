@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "EggEngine.h"
 
 /* Extended application class for this app from the EggEngine. */
@@ -7,8 +8,7 @@ class EngineApplication : public Application
 public:
 
     /* Constructor and Destructor. */
-    EngineApplication() = default;
-    virtual ~EngineApplication() = default;
+    EngineApplication();
 
     /** Ran on application closed/exited. */
     void Shutdown() override;

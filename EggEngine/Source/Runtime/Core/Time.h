@@ -26,14 +26,14 @@ public:
 
 	/** Gets the time TimePointMicroseconds in milliseconds of type T. */
 	template<typename T = int32_t>
-	constexpr auto GetMilliseconds() const
+	constexpr T GetMilliseconds() const
 	{
 		return static_cast<T>(TimePointMicroseconds) / static_cast<T>(1000);
 	}
 
 	/** Gets the time TimePointMicroseconds in microseconds of type T. */
 	template<typename T = int64_t>
-	constexpr auto GetMicroseconds() const
+	constexpr T GetMicroseconds() const
 	{
 		return static_cast<T>(TimePointMicroseconds);
 	}
