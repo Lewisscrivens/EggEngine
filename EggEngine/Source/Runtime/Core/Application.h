@@ -3,47 +3,26 @@
 #include "Time.h"
 #include "EggCore.h"
 
+/** Application interface. */
 class EGG_API Application
 {
 public:
 
 	/** Default app constructor and destructor. */
-	Application();
+	Application() = default;
 	virtual ~Application() = default;
 
-	/** Starting function with while Loop which loops until application is exited through error or user. */
-	virtual int Start();
+	/** Ran when the engine is shutting the application down. */
+	virtual void Shutdown() {}
 
-	/** Static getters for the application for access by subclasses. */
-	static Application& GetApplication()
-	{
-		return *ActiveApplication;
-	}
-
-	/** Is this application running. */
-	bool IsAppRunning() const
-	{
-		return bAppRunning;
-	}
-
-protected:
-
-    /** Ran on engine start for initialization of certain engine components. */
-    virtual void Init();
+    /** Ran to initialise application components. */
+    virtual void Init() {}
 
     /** Ran to tick each frame while in the loop. */
-    virtual void Tick(const float DeltaTime);
-
-private:
-
-	/** Static pointer to this app. */
-	static Application* ActiveApplication;
-
-    /** Calculation for FPS and DeltaTime in seconds as float. */
-    Time ApplicationTime;
-	
-	/** Is the app currently running? */
-	bool bAppRunning = true;
+    virtual void Tick(const float DeltaTime) {}
+    
+    /** Applications lifetime instance. */
+    LifeTime AppLifeTime;
 };
 
 /** Define in the sub application. */

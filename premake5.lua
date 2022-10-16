@@ -29,7 +29,7 @@ project "EggEngine"
 	
 	includedirs
 	{
-		"EggEngine/Source",
+		"EggEngine/Source/Runtime",
 		"EggEngine/Source/ThirdParty/Spdlog/include",
 	}
 	

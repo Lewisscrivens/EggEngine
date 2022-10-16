@@ -8,7 +8,10 @@ public:
 
     /* Constructor and Destructor. */
     EngineApplication() = default;
-    ~EngineApplication() = default;
+    virtual ~EngineApplication() = default;
+
+    /** Ran on application closed/exited. */
+    void Shutdown() override;
 
 protected:
 

@@ -2,6 +2,7 @@
 
 /* Includes for sub applications. */
 
+#include "Core/Engine.h"
 #include "Core/Application.h"
 #include "Core/EggCore.h"
 #include "Core/Log.h"

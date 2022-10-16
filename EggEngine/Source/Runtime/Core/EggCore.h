@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <utility>
-#include <string>
 
 /* Is profiling enabled? */
 #define ENGINE_LOG_ENABLED 1
@@ -59,7 +58,7 @@ constexpr SharedPtr<T> NewClass(Args&& ... args)
  *  therefore do not affect its lifecycle. They can also point to a shared pointer but it can become
  *  null at anytime. */
 template<typename T>
-using WeakPtr = std::shared_ptr<T>;
+using WeakPtr = std::weak_ptr<T>;
 template<typename T>
 constexpr WeakPtr<T> GetReference(SharedPtr<T> InSharedPtr)
 {

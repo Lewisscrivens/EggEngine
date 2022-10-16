@@ -2,20 +2,20 @@
 
 #ifdef PLATFORM_WINDOWS
 
-#include "Application.h"
+#include "Engine.h"
 
-/** Needs creating in each sub application to this engine. */
 extern Application* CreateApplication();
 
-/** Entry state for the Windows Application. Create a window and enter while loop to receive and dispatch messages for created window class. */
+/** Entry state for the engine. The engine will take car of the application initialisation. */
 int main(int argc, char** argv)
 {
-	// Initialise application.
-	Application* ActiveApplication = CreateApplication();
-
-	// Start the application loop.
-	ActiveApplication->Start();
-	delete ActiveApplication;
+	// Initialise/Start the Engine.
+	const auto EngineInstance = new Engine();
+	Application* AppInstance = CreateApplication();
+	EngineInstance->SetApplication(AppInstance);
+	EngineInstance->Start();
+	delete EngineInstance;
+	delete AppInstance;
 }
 
 #else
