@@ -3,8 +3,9 @@
 #include <memory>
 #include <utility>
 
-/* Is profiling enabled? */
+/* Enable/Disable engine functionality. */
 #define ENGINE_LOG_ENABLED 1
+#define ENGINE_ENSURES_ENABLED 1
 
 /** Default math path length */
 #define MAX_PATH 260
@@ -14,11 +15,7 @@
 
 /** Platform definitions. */
 #ifdef PLATFORM_WINDOWS
-#ifdef EGG_BUILD
-#define EGG_API __declspec(dllexport)
-#else
-#define EGG_API __declspec(dllimport)
-#endif
+
 #else 
 #error Egg Engine currently only supports windows!
 #endif
@@ -33,6 +30,22 @@
 #endif
 #define APP_LOG(LogType, ...) Log::AddAppLogMessage(LogType, __VA_ARGS__)
 #define APP_QUICK_LOG(...) Log::AddAppLogMessage(ELogType::Message, __VA_ARGS__)
+
+/** Defines engine ensure checks for debug modes. If not in debug mode or ensures are disabled it will do nothing. */
+#if ENGINE_ENSURES_ENABLED
+#if EGG_DEBUG
+#define ensure(val) { if(!(val)) { __debugbreak; } }
+#define ensureMsg(val, ...) { if(!(val)) { EGG_LOG(Error, "Ensure failed! {0}", __VA_ARGS__); __debugbreak; } }
+#else
+#define ensure(val)
+#define ensureMsg(val, ...)
+#endif
+#define ensureAlways(val) { if(!(val)) { __debugbreak; } }
+#define ensureMsgAlways(val, ...) { EGG_LOG(Error, "Ensure failed! {0}", __VA_ARGS__); __debugbreak; } }
+#else
+#define ensure(val)
+#define ensureMsg(val, ...)
+#endif
 
 /** A Unique Pointer solely and explicitly owns the object it references. Since there can only be one
  *  Unique Pointer to a given resource, Unique Pointers can transfer ownership, but cannot share it. */

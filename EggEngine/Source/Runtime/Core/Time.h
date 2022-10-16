@@ -1,13 +1,12 @@
 #pragma once
 
-#include "EggCore.h"
 #include <chrono>
 #include <string>
 #include <iomanip>
 #include <sstream>
 
 /** A point in time. */
-class EGG_API TimePoint
+class TimePoint
 {
 
 public:
@@ -86,12 +85,12 @@ public:
 	
 private:
 	
-	int64_t TimePointMicroseconds = 0.0f;
+	int64_t TimePointMicroseconds = 0;
 	
 };
 
 /** Lifetime timer. Keeps track of how long it has existed. */
-class EGG_API LifeTime
+class LifeTime
 {
 
 public:
@@ -170,7 +169,7 @@ protected:
 /** Engine timer class for calculating delta time and fps.
  *  NOTE: Could probably make some adjustments so FPS and DeltaTime are modular
  *       and not just stored from the seconds. */
-class EGG_API EngineTime : public LifeTime
+class EngineTime : public LifeTime
 {
 	
 public:

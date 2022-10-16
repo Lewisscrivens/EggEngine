@@ -1,8 +1,8 @@
 ﻿
 #include "EggPch.h"
-#include "Log.h"
+#include "Core/Time.h"
+#include "Logging/Log.h"
 #include "Utility/PathUtility.h"
-#include "Time.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 

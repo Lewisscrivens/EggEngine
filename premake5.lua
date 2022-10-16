@@ -12,8 +12,10 @@ winintermediatedir = "EggEngine/Intermediate/Win64/"
 	
 project "EggEngine"
 	location "EggEngine/Source/Runtime"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 	
 	targetdir (winbinariesdir .. "/%{prj.name}")
 	objdir (winintermediatedir .. "/%{prj.name}")
@@ -34,34 +36,37 @@ project "EggEngine"
 	}
 	
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "10.0.22621.0"
+		systemversion "latest"
 		
 		defines
 		{
 			"PLATFORM_WINDOWS",
-			"EGG_BUILD"
+			"EGG_BUILD",
+			"_CRT_SECURE_NO_WARNINGS"
 		}
 
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} %{cfg.buildtarget.directory}../EggEditor/" )
+			
 		}
 		
 	filter "configurations:Debug"
 		defines "EGG_DEBUG"
-		symbols "On"
+		runtime "Debug"
+		symbols "on"
 		
 	filter "configurations:Development"
 		defines "EGG_DEV"
-		optimize "On"
+		runtime "Release"
+		optimize "on"
 		
 project "EggEditor"
 	location "EggEngine/Source/Programs/Editor"
 	kind "ConsoleApp"
 	language "C++"
-
+	cppdialect "C++17"
+	staticruntime "on"
+	
 	targetdir (winbinariesdir .. "/%{prj.name}")
 	objdir (winintermediatedir .. "/%{prj.name}")
 	
@@ -83,19 +88,20 @@ project "EggEditor"
 	}
 	
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "10.0.22621.0"
+		systemversion "latest"
 		
 		defines
 		{
-			"PLATFORM_WINDOWS"
+			"PLATFORM_WINDOWS",
+			"_CRT_SECURE_NO_WARNINGS"
 		}
 		
 	filter "configurations:Debug"
 		defines "EGG_DEBUG"
-		symbols "On"
+		runtime "Debug"
+		symbols "on"
 		
 	filter "configurations:Development"
 		defines "EGG_DEV"
-		optimize "On"
+		runtime "Release"
+		optimize "on"

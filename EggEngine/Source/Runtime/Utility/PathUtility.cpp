@@ -130,15 +130,11 @@ bool FPathUtil::DoesExist(const std::string& InDirectory)
 
 std::string FPathUtil::GetWindowsFolder(GUID FolderID)
 {
-    PWSTR UserDirPath;
-    const HRESULT Result = SHGetKnownFolderPath(FolderID, 0, NULL, &UserDirPath);
-    std::string OutPath = "";
-    if (SUCCEEDED(Result))
-    {
-        std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> Converter;
-        OutPath = Converter.to_bytes(UserDirPath);
-    }
-
+    auto UserDirPath = new wchar_t[128];
+    SHGetKnownFolderPath(FolderID, 0, nullptr, &UserDirPath);
+    char OutPath[128];
+    wcstombs(OutPath, UserDirPath, 128);
     CoTaskMemFree(UserDirPath);
+    
     return OutPath;
 }

@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "spdlog/spdlog.h"
-#include "EggCore.h"
+#include "Core/EggCore.h"
 
 /* Define logging enum... */
 enum ELogType
@@ -13,7 +13,7 @@ enum ELogType
 };
 
 /* Logging class to hold application and engine logging extended from the spdlog library. */
-class EGG_API Log
+class Log
 {	
 public:
 

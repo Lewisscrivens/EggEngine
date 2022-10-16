@@ -1,10 +1,9 @@
 ﻿#pragma once
 
 #include "Application.h"
-#include "Core/EggCore.h"
 
 /** Engine entry point. Manages and updates all modules / applications. */
-class EGG_API Engine
+class Engine
 {
 
 public:

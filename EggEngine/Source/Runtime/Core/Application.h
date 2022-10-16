@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Time.h"
-#include "EggCore.h"
 
 /** Application interface. */
-class EGG_API Application
+class Application
 {
 	
 public:
@@ -43,7 +42,7 @@ public:
 protected:
 
 	/** Lifetime instance. */
-	LifeTime AppLifeTime;
+	LifeTime AppLifeTime{};
 
 	/** Config settings. */
 	std::string Name;

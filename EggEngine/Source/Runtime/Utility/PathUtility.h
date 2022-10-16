@@ -1,9 +1,7 @@
 ﻿#pragma once
 
-#include "Core/EggCore.h"
-
 /** Windows helper class for getting important directories on a windows machine. */
-struct EGG_API FPathUtil
+struct FPathUtil
 {
     
 public:

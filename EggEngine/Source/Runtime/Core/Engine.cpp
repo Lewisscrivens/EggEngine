@@ -1,7 +1,7 @@
 ﻿
 #include "EggPch.h"
 #include "Engine.h"
-#include "Log.h"
+#include "Logging/Log.h"
 
 Engine* Engine::EngineInstance = nullptr;
 
