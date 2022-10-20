@@ -4,16 +4,19 @@
 struct FWindowConfig
 {
     std::string Name{};
-    unsigned int Width;
-    unsigned int Height;
+    int Width = 0;
+    int Height = 0;
+    bool bMaximised = false;
 
-    FWindowConfig(const std::string& WindowName = "Default Window",
-        unsigned int WindowWidth = 1280,
-        unsigned int WindowHeight = 720)
+    FWindowConfig(const std::string& WindowName = "Egg Window",
+        int WindowWidth = 1280,
+        int WindowHeight = 720,
+        bool StartMaximised = false)
     {
         Name = WindowName;
         Width = WindowWidth;
         Height = WindowHeight;
+        bMaximised = StartMaximised;
     }
 };
 
@@ -22,20 +25,29 @@ class Window
 {
 
 public:
-    
+
+    Window() = default;
     virtual ~Window() = default;
 
+    /** Window creation and initialisation. Returns pointer to the new window. */
+    static Window* CreateNativeWindow(const FWindowConfig& WindowConfig = FWindowConfig());
+    
     /** Update window context. */
-    virtual void OnUpdate() = 0;
+    virtual int Update() const = 0;
 
     /** Return the width and height. */
-    virtual unsigned int GetWidth() const  = 0;
-    virtual unsigned int GetHeight() const  = 0;
+    virtual int GetWidth() const  = 0;
+    virtual int GetHeight() const  = 0;
 
     /** Set/Getter for VSync capabilities. */
     virtual void SetVSyncEnabled(bool bIsEnabled) = 0;
-    virtual void IsVSyncEnabled() = 0;
+    bool IsVSyncEnabled() const
+    {
+        return bVSyncEnabled;
+    }
+    
+protected:
 
-    /** Window creation and initialisation. */
-    static Window* Create(const FWindowConfig& WindowConfig = FWindowConfig());
+    bool bVSyncEnabled = false;
+    
 };

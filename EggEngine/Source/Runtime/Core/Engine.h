@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Application.h"
+#include "EggCore.h"
 
 /** Engine entry point. Manages and updates all modules / applications. */
 class Engine
@@ -46,9 +47,10 @@ protected:
 
 private:
 
-    /** Engine and app instance. */
+    /** Engine/app/window instance. */
     static Engine* EngineInstance;
     Application* AppInstance = nullptr;
+    UniquePtr<class Window> AppWindow;
 
     /** True while the engine is active and has not ran into any errors. */
     bool bEngineRunning = false;

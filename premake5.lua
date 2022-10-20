@@ -62,7 +62,7 @@ project "EggEngine"
 		
 project "EggEditor"
 	location "EggEngine/Source/Programs/Editor"
-	kind "ConsoleApp"
+	kind "WindowedApp"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"

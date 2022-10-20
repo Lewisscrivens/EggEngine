@@ -3,6 +3,10 @@
 #include "Engine.h"
 #include "Logging/Log.h"
 
+#if PLATFORM_WINDOWS
+#include "Platform/Windows/WindowsWindow.h"
+#endif
+
 Engine* Engine::EngineInstance = nullptr;
 
 Engine::Engine()
@@ -23,10 +27,18 @@ int Engine::Start()
     // Enter application loop.
     while (bEngineRunning)
     {
+        // Check if we have returned out of the app due to an error.
+        const int UpdateStatus = AppWindow->Update();
+        if (UpdateStatus < 0)
+        {
+            return UpdateStatus;
+        }
+
         // Update engine frame time.
         EngineTiming.Update();
         Tick(EngineTiming.GetDeltaTime());
 
+        
     }
 
     return 0;
@@ -38,7 +50,6 @@ void Engine::Shutdown()
     {
         AppInstance->Shutdown();
     }
-
     
 }
 
@@ -54,6 +65,11 @@ void Engine::Init()
         return;
     }
     AppInstance->Init();
+    
+    // Create window for engine application to use.
+#if PLATFORM_WINDOWS
+    AppWindow = UniquePtr<Window>(WindowsWindow::CreateNativeWindow());
+#endif
     
     bEngineRunning = true;
 }

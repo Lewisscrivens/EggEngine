@@ -3,13 +3,13 @@
 #include "EggEngine.h"
 
 /* Extended application class for this app from the EggEngine. */
-class EngineApplication : public Application
+class EditorApplication : public Application
 {
 public:
 
     /* Constructor and Destructor. */
-    EngineApplication();
-
+    EditorApplication();
+    
     /** Ran on application closed/exited. */
     void Shutdown() override;
 
@@ -22,8 +22,8 @@ protected:
     void Tick(const float DeltaTime) override;
 };
 
-/* Define create app function to return this app to the engine entry point. */
+/** Return this editor application. */
 inline Application* CreateApplication()
 {
-    return new EngineApplication();
+    return new EditorApplication();
 }

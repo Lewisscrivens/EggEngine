@@ -11,9 +11,9 @@ public:
 	/** Default app constructor and destructor. */
 	Application() = default;
 	virtual ~Application() = default;
-
+	
 	/** Ran when the engine is shutting the application down. */
-	virtual void Shutdown() {}
+	virtual void Shutdown() = 0;
 
     /** Ran to initialise application components. */
     virtual void Init() {}
@@ -47,7 +47,6 @@ protected:
 	/** Config settings. */
 	std::string Name;
 	std::string Version;
-	
 };
 
 /** Define in the sub application. */

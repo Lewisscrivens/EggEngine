@@ -3,11 +3,11 @@
 #ifdef PLATFORM_WINDOWS
 
 #include "Engine.h"
+#include <Windows.h>
 
 extern Application* CreateApplication();
 
-/** Entry state for the engine. The engine will take car of the application initialisation. */
-int main(int argc, char** argv)
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPreviewInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	// Initialise/Start the Engine.
 	const auto EngineInstance = new Engine();

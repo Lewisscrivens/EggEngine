@@ -41,7 +41,7 @@
 #define ensureMsg(val, ...)
 #endif
 #define ensureAlways(val) { if(!(val)) { __debugbreak; } }
-#define ensureMsgAlways(val, ...) { EGG_LOG(Error, "Ensure failed! {0}", __VA_ARGS__); __debugbreak; } }
+#define ensureMsgAlways(val, ...) { EGG_LOG(Error, "Ensure failed! {0}", __VA_ARGS__); __debugbreak; }
 #else
 #define ensure(val)
 #define ensureMsg(val, ...)
