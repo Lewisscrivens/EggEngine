@@ -33,7 +33,7 @@ WindowsWindow::WindowsWindow(const FWindowConfig& WindowConfig)
     const auto WindowIcon = LoadImageW(hInstance, IconWide, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE);
     WindowsClass.hIcon = (HICON)WindowIcon;
     
-    RegisterClass(&WindowsClass);
+    RegisterClassW(&WindowsClass);
     
     // Create/Show new window.
     auto WindowStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME;
@@ -53,7 +53,7 @@ WindowsWindow::WindowsWindow(const FWindowConfig& WindowConfig)
 
 WindowsWindow::~WindowsWindow()
 {
-    UnregisterClass(WindowsClass.lpszClassName, hInstance);
+    UnregisterClassW(WindowsClass.lpszClassName, hInstance);
     DestroyWindow(WindowHandle);
 }
 
@@ -82,7 +82,7 @@ int WindowsWindow::Update() const
     
     // Perform and dispatch message events from the window.
     MSG Msg;
-    while (PeekMessage(&Msg, WindowHandle, 0, 0, PM_REMOVE))
+    while (PeekMessageW(&Msg, WindowHandle, 0, 0, PM_REMOVE))
     {
         //switch ((int)Msg.wParam)
         //{
@@ -90,7 +90,7 @@ int WindowsWindow::Update() const
         //}
 
         TranslateMessage(&Msg);
-        DispatchMessage(&Msg);
+        DispatchMessageW(&Msg);
     }
 	
     // Return nothing.
@@ -105,7 +105,7 @@ LRESULT CALLBACK WindowsWindow::HandleWindowUpdate(HWND InHandle, UINT Msg, WPAR
         return WindowInstancePtr->HandleWindowInstanceUpdate(InHandle, Msg, wParam, lParam);
     }
     
-    return DefWindowProc(InHandle, Msg, wParam, lParam);
+    return DefWindowProcW(InHandle, Msg, wParam, lParam);
 }
 
 LRESULT WindowsWindow::HandleWindowInstanceUpdate(HWND InHandle, UINT Msg, WPARAM wParam, LPARAM lParam)
@@ -122,5 +122,5 @@ LRESULT WindowsWindow::HandleWindowInstanceUpdate(HWND InHandle, UINT Msg, WPARA
     default: break;
     }
     
-    return DefWindowProc (InHandle, Msg, wParam, lParam);
+    return DefWindowProcW(InHandle, Msg, wParam, lParam);
 }

@@ -1,28 +1,28 @@
 #pragma once
 
-#ifdef PLATFORM_WINDOWS
-
 #include "Engine.h"
-#include <Windows.h>
 
 extern Application* CreateApplication();
 
-int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPreviewInstance, LPSTR lpCmdLine, int nCmdShow)
+int Main()
 {
 	// Initialise/Start the Engine.
 	const auto EngineInstance = new Engine();
 	Application* AppInstance = CreateApplication();
 	EngineInstance->SetApplication(AppInstance);
-	EngineInstance->Start();
+	const int ReturnCode = EngineInstance->Start();
 	delete EngineInstance;
 	delete AppInstance;
+	return ReturnCode;
 }
 
-#else
+#ifdef PLATFORM_WINDOWS
 
-int main()
+#include <Windows.h>
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreviewInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	// ONLY WINDOWS SUPPORTED FOR NOW.
+	return Main();
 }
 
 #endif
