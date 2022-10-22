@@ -3,9 +3,6 @@
 /** Windows helper class for getting important directories on a windows machine. */
 struct FPathUtil
 {
-    
-public:
-    
     static std::string GetExeFile();
     
     static std::string GetExeDir();

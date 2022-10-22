@@ -6,7 +6,6 @@ extern Application* CreateApplication();
 
 int Main()
 {
-	// Initialise/Start the Engine.
 	const auto EngineInstance = new Engine();
 	Application* AppInstance = CreateApplication();
 	EngineInstance->SetApplication(AppInstance);
@@ -22,7 +21,18 @@ int Main()
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreviewInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	return Main();
+	const int Result = Main();
+	switch(Result)
+	{
+	case -1:
+	{
+		MessageBoxW(nullptr, L"An error has occured check logs!", L"Error", MB_OK | MB_ICONEXCLAMATION);
+	}
+	break;
+	default: break;
+	}
+	
+	return 0;
 }
 
 #endif

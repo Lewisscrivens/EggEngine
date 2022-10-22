@@ -1,11 +1,8 @@
 ﻿
 #include "EggPch.h"
 #include "Engine.h"
+#include "Platform/PlatformWindow.h"
 #include "Logging/Log.h"
-
-#if PLATFORM_WINDOWS
-#include "Platform/Windows/WindowsWindow.h"
-#endif
 
 Engine* Engine::EngineInstance = nullptr;
 
@@ -21,15 +18,19 @@ Engine::~Engine()
 
 int Engine::Start()
 {
-    // Run begin first and once.
-    Init();
+    // Initialise engine and modules.
+    if (!Init())
+    {
+        EGG_LOG(Warning, "Engine failed to initialise! Exiting!");
+        return -1;
+    }
 
     // Enter application loop.
     while (bEngineRunning)
     {
         // Check if we have returned out of the app due to an error.
         const int UpdateStatus = AppWindow->Update();
-        if (UpdateStatus < 0)
+        if (UpdateStatus < 1)
         {
             return UpdateStatus;
         }
@@ -53,7 +54,7 @@ void Engine::Shutdown()
     
 }
 
-void Engine::Init()
+bool Engine::Init()
 {
     // Init logging system.
     Log::Init();
@@ -62,16 +63,19 @@ void Engine::Init()
     if (!AppInstance)
     {
         EGG_LOG(Warning, "Application could not be created! Exiting!");
-        return;
+        return false;
     }
     AppInstance->Init();
     
-    // Create window for engine application to use.
-#if PLATFORM_WINDOWS
-    AppWindow = UniquePtr<Window>(WindowsWindow::CreateNativeWindow());
-#endif
+    // Initialise the window.
+    if (!FPlatformWindow::InitNativeWindow())
+    {
+        return false;
+    }
+    AppWindow = UniquePtr<Window>(FPlatformWindow::CreateNativeWindow());
     
     bEngineRunning = true;
+    return true;
 }
 
 void Engine::Tick(const float DeltaTime)

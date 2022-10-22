@@ -3,6 +3,38 @@
 #include "WindowsWindow.h"
 #include "Logging/Log.h"
 #include "Utility/PathUtility.h"
+#include "Utility/StringUtility.h"
+
+bool WindowsWindow::InitNativeWindow()
+{
+    WNDCLASSEXW WindowsClass;
+
+    ZeroMemory(&WindowsClass, sizeof(WindowsClass));
+    WindowsClass.cbSize = sizeof(WindowsClass);
+    WindowsClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+    WindowsClass.lpfnWndProc = WindowProcessUpdates;
+    WindowsClass.hInstance = GetModuleHandleW(nullptr);
+    WindowsClass.lpszClassName = WIN32_CLASS_NAME;
+    WindowsClass.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+    WindowsClass.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
+    
+    // Load icon.
+    const std::string IconDir = FPathUtil::GetEngineInstallDir() + "/EggEngine/Content/Icons/EggIcon.ico";
+    WindowsClass.hIcon = static_cast<HICON>(LoadImageW(GetModuleHandleW(nullptr),
+                                            FStringUtil::StringToWideString(IconDir).c_str(),
+                                            IMAGE_ICON,
+                                            0,
+                                            0,
+                                            LR_DEFAULTSIZE | LR_LOADFROMFILE));
+    
+    if (!RegisterClassExW(&WindowsClass))
+    {
+        EGG_LOG(Error, "Win32 API failed to register window class w32_EggWindow. See WindowsWindow InitNativeWindow!");
+        return false;
+    }
+
+    return true;
+}
 
 Window* WindowsWindow::CreateNativeWindow(const FWindowConfig& WindowConfig)
 {
@@ -11,30 +43,6 @@ Window* WindowsWindow::CreateNativeWindow(const FWindowConfig& WindowConfig)
 
 WindowsWindow::WindowsWindow(const FWindowConfig& WindowConfig)
 {
-    // Create window class.
-    hInstance = GetModuleHandleW(nullptr);
-    WindowsClass = {};
-    WindowsClass.hInstance = hInstance;
-    WindowsClass.lpfnWndProc = HandleWindowUpdate;
-    WindowsClass.cbClsExtra = 0;
-    WindowsClass.cbWndExtra = 0;
-    WindowsClass.hCursor = LoadCursorW(nullptr, IDC_ARROW);
-    WindowsClass.hbrBackground = (HBRUSH)GetStockObject (BLACK_BRUSH);
-    WindowsClass.style = CS_HREDRAW | CS_VREDRAW;
-    
-    const std::wstring NameWideStr = std::wstring(WindowConfig.Name.begin(), WindowConfig.Name.end());
-    const wchar_t* NameWide = NameWideStr.c_str();
-    WindowsClass.lpszClassName = NameWide;
-
-    // Load icon.
-    std::string IconDir = FPathUtil::GetEngineInstallDir() + "/EggEngine/Content/Icons/EggIcon.ico";
-    const std::wstring IconWideStr = std::wstring(IconDir.begin(), IconDir.end());
-    const wchar_t* IconWide = IconWideStr.c_str();
-    const auto WindowIcon = LoadImageW(hInstance, IconWide, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE);
-    WindowsClass.hIcon = (HICON)WindowIcon;
-    
-    RegisterClassW(&WindowsClass);
-    
     // Create/Show new window.
     auto WindowStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME;
     if (WindowConfig.bMaximised)
@@ -43,8 +51,20 @@ WindowsWindow::WindowsWindow(const FWindowConfig& WindowConfig)
     }
 
     WindowName = WindowConfig.Name;
-    WindowHandle = CreateWindowExW(WS_EX_APPWINDOW, NameWide, NameWide, WindowStyle, CW_USEDEFAULT, CW_USEDEFAULT, WindowConfig.Width, 
-        WindowConfig.Height, nullptr, nullptr, hInstance, nullptr);
+    hInstance = GetModuleHandleW(nullptr);
+    WindowHandle = CreateWindowExW(WS_EX_APPWINDOW,
+                                   WIN32_CLASS_NAME,
+                                   FStringUtil::StringToWideString(WindowName).c_str(),
+                                   WindowStyle,
+                                   CW_USEDEFAULT,
+                                   CW_USEDEFAULT,
+                                   WindowConfig.Width, 
+                                   WindowConfig.Height,
+                                   nullptr,
+                                   nullptr,
+                                   hInstance,
+                                   nullptr);
+
     SetWindowLongPtrW(WindowHandle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
     ShowWindow(WindowHandle, WindowConfig.bMaximised ? SW_MAXIMIZE : SW_SHOWDEFAULT);
 
@@ -53,7 +73,7 @@ WindowsWindow::WindowsWindow(const FWindowConfig& WindowConfig)
 
 WindowsWindow::~WindowsWindow()
 {
-    UnregisterClassW(WindowsClass.lpszClassName, hInstance);
+    UnregisterClassW(WIN32_CLASS_NAME, hInstance);
     DestroyWindow(WindowHandle);
 }
 
@@ -72,52 +92,52 @@ void WindowsWindow::SetVSyncEnabled(bool bIsEnabled)
     
 }
 
-int WindowsWindow::Update() const
+int WindowsWindow::Update()
 {
     if (bWindowClosed)
     {
         EGG_LOG(Message, "Editor has been closed, shutting down...");
-        return -1;
+        return 0;
     }
     
     // Perform and dispatch message events from the window.
     MSG Msg;
     while (PeekMessageW(&Msg, WindowHandle, 0, 0, PM_REMOVE))
     {
-        //switch ((int)Msg.wParam)
-        //{
-        //default: break;
-        //}
+        if (Msg.message == WM_QUIT)
+        {
+            bWindowClosed = true;
+            continue;
+        }
 
         TranslateMessage(&Msg);
         DispatchMessageW(&Msg);
     }
-	
-    // Return nothing.
-    return 0;
+
+    return 1;
 }
 
-LRESULT CALLBACK WindowsWindow::HandleWindowUpdate(HWND InHandle, UINT Msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WindowsWindow::WindowProcessUpdates(HWND InHandle, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-    const auto WindowInstancePtr = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(InHandle, GWLP_USERDATA));
+    const auto WindowInstancePtr = reinterpret_cast<WindowsWindow*>(GetWindowLongPtrW(InHandle, GWLP_USERDATA));
     if (WindowInstancePtr != nullptr)
     {
-        return WindowInstancePtr->HandleWindowInstanceUpdate(InHandle, Msg, wParam, lParam);
+        return WindowInstancePtr->WindowInstanceProcessUpdates(InHandle, Msg, wParam, lParam);
     }
     
     return DefWindowProcW(InHandle, Msg, wParam, lParam);
 }
 
-LRESULT WindowsWindow::HandleWindowInstanceUpdate(HWND InHandle, UINT Msg, WPARAM wParam, LPARAM lParam)
+LRESULT WindowsWindow::WindowInstanceProcessUpdates(HWND InHandle, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
     // Handle messages being sent from the window class.
-    switch ((int)Msg)
+    switch (Msg)
     {
     // On application closed.
     case WM_CLOSE:
     {
         bWindowClosed = true;
-        break;
+        return 0;
     }
     default: break;
     }

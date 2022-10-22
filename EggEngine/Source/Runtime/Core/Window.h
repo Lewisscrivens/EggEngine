@@ -29,11 +29,8 @@ public:
     Window() = default;
     virtual ~Window() = default;
 
-    /** Window creation and initialisation. Returns pointer to the new window. */
-    static Window* CreateNativeWindow(const FWindowConfig& WindowConfig = FWindowConfig());
-    
     /** Update window context. */
-    virtual int Update() const = 0;
+    virtual int Update() = 0;
 
     /** Return the width and height. */
     virtual int GetWidth() const  = 0;

@@ -37,7 +37,7 @@ public:
 protected:
 
     /** Initialise engine modules and application. */
-    void Init();
+    bool Init();
 
     /** Shut down engine modules and application. */
     void Shutdown();

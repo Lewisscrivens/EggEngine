@@ -3,6 +3,8 @@
 #include "Core/Window.h"
 #include <Windows.h>
 
+#define WIN32_CLASS_NAME L"w32_EggWindow"
+
 class WindowsWindow : public Window
 {
     
@@ -11,7 +13,10 @@ public:
     WindowsWindow(const FWindowConfig& WindowConfig);
     ~WindowsWindow() override;
 
-    /** Window creation/removal and initialisation. */
+    /** Init window class via win32 api. */
+    static bool InitNativeWindow();
+    
+    /** Win32 window creation. Returns pointer to the new window as parent. */
     static Window* CreateNativeWindow(const FWindowConfig& WindowConfig = FWindowConfig());
     
     /** Return the width and height. */
@@ -22,16 +27,15 @@ public:
     void SetVSyncEnabled(bool bIsEnabled) override;
 
     /** Update window context. */
-    int Update() const override;
+    int Update() override;
 
     /** Handle Win32 API messages. */
-    static LRESULT CALLBACK HandleWindowUpdate(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-    LRESULT HandleWindowInstanceUpdate(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    static LRESULT CALLBACK WindowProcessUpdates(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    LRESULT WindowInstanceProcessUpdates(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
     
     HWND WindowHandle;
-    WNDCLASS WindowsClass;
     HINSTANCE hInstance;
     std::string WindowName;
     bool bWindowClosed = false;
